@@ -1,0 +1,100 @@
+金牛热修复文档之一
+在project中加入
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://dl.bintray.com/dyglcc/repo'
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.jiniu.hotfixand:hotfixand-patch-gradle-plugin:1.3.1'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+app/build.gradle
+下面加入
+apply plugin 'com.jinniu.hotfixand.patch'
+
+tinker-sample-demo正常使用
+
+def gitSha() {
+    try {
+        String gitRev = 'git rev-parse --short HEAD'.execute(null, project.rootDir).text.trim()
+        if (gitRev == null) {
+            throw new GradleException("can't get git rev, you should add git to system path or just input test value, such as 'testTinkerId'")
+        }
+        return gitRev
+    } catch (Exception e) {
+        throw new GradleException("can't get git rev, you should add git to system path or just input test value, such as 'testTinkerId'")
+    }
+}
+
+def javaVersion = JavaVersion.VERSION_1_7
+
+
+/**
+         * you can use multiDex and install it in your ApplicationLifeCycle implement
+         */
+        multiDexEnabled true
+        /**
+         * buildConfig can change during patch!
+         * we can use the newly value when patch
+         */
+        buildConfigField "String", "MESSAGE", "\"I am the base apk\""
+//        buildConfigField "String", "MESSAGE", "\"I am the patch apk\""
+        /**
+         * client version would update with patch
+         * so we can get the newly git version easily!
+         */
+        buildConfigField "String", "TINKER_ID", "\"${getTinkerIdValue()}\""
+        buildConfigField "String", "PLATFORM",  "\"all\""
+
+
+
+        /**
+         * you can use multiDex and install it in your ApplicationLifeCycle implement
+         */
+        multiDexEnabled true
+        /**
+         * buildConfig can change during patch!
+         * we can use the newly value when patch
+         */
+        buildConfigField "String", "MESSAGE", "\"I am the base apk\""
+//        buildConfigField "String", "MESSAGE", "\"I am the patch apk\""
+        /**
+         * client version would update with patch
+         * so we can get the newly git version easily!
+         */
+        buildConfigField "String", "TINKER_ID", "\"${getTinkerIdValue()}\""
+        buildConfigField "String", "PLATFORM",  "\"all\""
+
+
+集成注意问题
+1、Tinker_id的大版本升级问题
+保证tinkerId的唯一性，这里推荐使用git的rev或者svn的rev（commit id），如果我们升级了客户端版本，但是tinkerid于旧版本相同，会导致可能加载旧版本的补丁。升级客户端版本，需要更新tinkid
+patch文件夹下面的log.txt可以看到基线版本
+
+
+
+／／ 后台部署
+安装mysql，tomcat
+创建数据库
+需要启动三个独立的服务1、后台管理服务 2、对客户端提供api的服务 3、需要另外部署一个用于下载补丁文件的静态服务
+
+1、下载部署所需要的文件(war包、配置文件、建库sql文件) war包下载.
+
+2、在mysql里面建一个数据库,建表sql在patchserver-manager/import.sql中
+
+3、把hotfix-apis.properties和hotfix-console.properties两个配置文件放到/opt/config(*如果是windows部署，放置在tomcat对应的盘符下，假如tomcat在d://tomcat 配置文件放在d://opt/config下})目录下，并且修改里面对应的配置(数据源配置、访问路径配置、补丁存放目录)
+
+4、把hotfix-apis.war hotfix-console.war放到tomcat下面的webapps目录下
+
+等服务启动完毕就可以在浏览器上访问http://localhost:8080/hotfix-console
+
+
+
