@@ -38,13 +38,13 @@ public class DefaultAppLike extends SampleApplicationLike {
     @Override
     public void onCreate() {
         super.onCreate();
-        String appId = "20171011113551898-5395";
-        String appSecret = "10df7d61b05649efbcfa572519743667";
+        String appId = "20170907163813557-7443";
+        String appSecret = "a94728234232444db6f65b6d18971536";
         // 设置设备id，或者null
         String deviceId = "aabbcc";
         String channel = Util.getApplicationMetaData("HOTFIX_CHANNEL", getApplication());
 
-        PatchManager.getInstance().init(getApplication(), "http://192.168.0.123:8080/hotfix-apis/",
+        PatchManager.getInstance().init(getApplication(), "https://192.168.1.7:8443/hotfix-apis/",
                 appId, appSecret, deviceId, channel);
 //        PatchManager.getInstance().init(getApplication(), "http://192.168.3.16:8080/hotfix-apis/",
 //                appId, appSecret, null, null);

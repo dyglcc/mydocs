@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_sample);
         System.out.println(100 / 1);
-        Toast.makeText(this, "i am patch", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "i am patch1111", Toast.LENGTH_LONG).show();
         findViewById(R.id.toastInfo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
